@@ -24,6 +24,19 @@ export default class ViewsController {
   }
 
   update() {
+    // delete unexistable views
+    const viewsToDelete = [];
+    this.views.forEach(v => {
+      if (!this.arena.isItemExist(v.model)) {
+        viewsToDelete.push(v);
+      }
+    });
+    viewsToDelete.forEach(v => {
+      this.views.splice(this.views.indexOf(v), 1);
+      this.stage.removeChild(v);
+    });
+
+    // create views
     this.arena.items.flat().forEach(i => {
       if (!i) {
         return;
@@ -32,10 +45,14 @@ export default class ViewsController {
         this._trackView(this._createViewOf(i));
       }
     });
-    this.views.forEach(v => this.arena.isItemExist(v.model) ?
-      null : this.stage.removeChild(v));
+    // delete unexistable views
+    // this.views.forEach(v => this.arena.isItemExist(v.model) ?
+    //   null : this.stage.removeChild(v));
+
+    // update views
     this.views.forEach(v => v.updateView());
 
+    // delete unexistable characters views
     const charactersViewsToRemove = [];
     this.charactersViews.forEach(cw => {
       if (this.arena.isCharacterDead(cw.model)) {
@@ -46,11 +63,15 @@ export default class ViewsController {
       this.charactersViews.splice(this.charactersViews.indexOf(cw), 1);
       this.stage.removeChild(cw);
     });
+
+    // create characters views
     this.arena.characters.forEach(c => {
       if (!this.charactersViews.find(cw => cw.model === c)) {
         this._trackCharacterView(this._createViewOf(c));
       }
     });
+
+    // update character views
     this.charactersViews.forEach(cv => cv.updateView());
   }
 

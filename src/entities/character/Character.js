@@ -15,10 +15,12 @@ export default class Character {
     this.sizeX = CHARACTER_SIZE;
     this.sizeY = CHARACTER_SIZE;
     this.arena = arena;
-    this.bombPower = 6;
+    this.bombPower = 4;
     this.dyingTime = dyingTime;
     this.isDead = false;
     this.isDying = false;
+    this._bombTimeout = 2000;
+    this._canPlantBomb = true;
     this.movementComponent = new
       MovementComponent(this.coors, new CollisionsDetector(arena), this);
   }
@@ -37,11 +39,16 @@ export default class Character {
   }
 
   plantBomb() {
+    if (!this._canPlantBomb || this.isDead || this.isDying) {
+      return;
+    }
+    this._canPlantBomb = false;
+    setTimeout(() => this._canPlantBomb = true, this._bombTimeout);
     const [bombX, bombY] = [
       Math.floor((this.coors.x + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE,
       Math.floor((this.coors.y + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE
     ];
-    const bomb = new Bomb(bombX, bombY, this.bombPower, 2000, this.arena, CELL_SIZE);
+    const bomb = new Bomb(bombX, bombY, this.bombPower, this._bombTimeout, this.arena, CELL_SIZE);
     this.arena.addItem(bomb);
     bomb.turnOnTimer();
   }

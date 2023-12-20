@@ -10,10 +10,16 @@ export default class Bomb {
     this.power = power;
     this.arena = arena;
     this.bombSize = bombSize;
+    this._detonationTimerID = '';
   }
 
   turnOnTimer() {
-    setTimeout(() => this._detonate(), this.detonationTimeout);
+    this._detonationTimerID = setTimeout(() => this._detonate(), this.detonationTimeout);
+  }
+
+  destroy() {
+    this._detonate();
+    clearTimeout(this._detonationTimerID);
   }
 
   _detonate() {
@@ -33,7 +39,7 @@ export default class Bomb {
         if (itemOnTheExplosionWay === undefined) {
           break;
         }
-        if (itemOnTheExplosionWay) {
+        if (itemOnTheExplosionWay && !(itemOnTheExplosionWay instanceof Explosion)) {
           if (this.arena.isItemDestroyable(itemOnTheExplosionWay)) {
             itemOnTheExplosionWay.destroy(1000);
           }

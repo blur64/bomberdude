@@ -132,6 +132,7 @@ export default class MovementComponent {
     }
   }
 
+
   setMoveUp(isMove) {
     this.inputDirectionsState.isUp = isMove;
   }

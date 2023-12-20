@@ -1,7 +1,7 @@
 const CELL_SIZE = 60;
 const CHARACTER_SIZE = 59;
-const INITIAL_CHARACTER_VELOCITY_X = 4;
-const INITIAL_CHARACTER_VELOCITY_Y = 4;
+const INITIAL_CHARACTER_VELOCITY_X = 3;
+const INITIAL_CHARACTER_VELOCITY_Y = 3;
 const directions = {
   UP: 'up',
   DOWN: 'down',
