@@ -1,28 +1,8 @@
-import KeyboardController from './KeyboardController.js';
-import { directions, actions } from '../constants/constants.js';
+import { directions } from "../constants/constants";
 
 export default class CharacterController {
-  constructor(character, movementKeys, actionKeys) {
+  constructor(character) {
     this._character = character;
-    this._keyToDirection = movementKeys;
-    this._keyToAction = actionKeys;
-    new KeyboardController({
-      keysToDetect: Object.keys(movementKeys),
-      onKeyDown: this._onStartMove.bind(this),
-      onKeyUp: this._onFinishMove.bind(this)
-    });
-    new KeyboardController({
-      keysToDetect: Object.keys(actionKeys),
-      onKeyDown: this._onAction.bind(this)
-    });
-  }
-
-  _onStartMove(key) {
-    this._setCharacterMove(this._keyToDirection[key], true);
-  }
-
-  _onFinishMove(key) {
-    this._setCharacterMove(this._keyToDirection[key], false);
   }
 
   _setCharacterMove(direction, isMove) {
@@ -39,13 +19,6 @@ export default class CharacterController {
       case directions.LEFT:
         this._character.movementComponent.setMoveLeft(isMove);
         break;
-    }
-  }
-
-  _onAction(key) {
-    switch (this._keyToAction[key]) {
-      case actions.PLANT_BOMB:
-        this._character.plantBomb();
     }
   }
 }

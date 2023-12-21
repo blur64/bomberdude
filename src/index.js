@@ -2,7 +2,7 @@ import { Application } from 'pixi.js';
 import ResourcesManager from './resources/ResourcesManager.js';
 import Arena from './entities/arena/Arena.js';
 import Character from './entities/character/Character.js';
-import CharacterController from './input/CharacterController.js';
+import PlayerCharacterController from './input/PlayerCharacterController.js';
 import AICharacterController from './input/AICHaracterController.js';
 import ViewsController from './views/ViewsController.js';
 import ArenaView from './views/ArenaView.js';
@@ -67,7 +67,7 @@ function start() {
       initialY: (ARENA_ROWS_COUNT - 1) * CELL_SIZE,
       arena
     });
-    new CharacterController(character, movementKeys1, actionKeys1);
+    new PlayerCharacterController(character, movementKeys1, actionKeys1);
     const aiCharacterController = new AICharacterController(aiCharacter, arena);
     const aiCharacterController2 = new AICharacterController(aiCharacter2, arena);
     const aiCharacterController3 = new AICharacterController(aiCharacter3, arena);
