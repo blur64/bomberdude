@@ -40,8 +40,6 @@ class ItemContext {
   }
 }
 
-// class CharacterContext {}
-
 export default class Arena {
   constructor(rowsCount, colsCount) {
     this._rowsCount = rowsCount;
@@ -127,11 +125,6 @@ export default class Arena {
   }
 
   _generateArenaSections() {
-    // let i = 0;
-    // while(i < this._colsCount) {
-    //   this.
-    // }
-
     let row = 1;
     let column = 1;
 
@@ -239,10 +232,8 @@ export default class Arena {
   }
 
   isItemCrossableFor(item, relativeTo) {
-    if (item instanceof ArenaSection) {
-      return false;
-    }
-    return this._findContextOf(item).isItCrossableFor(relativeTo);
+    return item ? (item instanceof ArenaSection ? false :
+      this._findContextOf(item).isItCrossableFor(relativeTo)) : true;
   }
 
   isItemDestroyable(item) {
@@ -403,11 +394,10 @@ export default class Arena {
         { x: coorsToCheck.x + CHARACTER_SIZE, y: coorsToCheck.y + CHARACTER_SIZE },
         { x: coorsToCheck.x, y: coorsToCheck.y + CHARACTER_SIZE },
       ];
-      // return pointsToCheck.every(p => this.getItemThePointIn(p.x, p.y) === null);
       if (!pointsToCheck.every(p => {
         const itemThePointIn = this.getItemThePointIn(p.x, p.y);
         return itemThePointIn === null || (itemThePointIn instanceof Bomb ?
-          this._findContextOf(itemThePointIn).isItCrossableFor(item) : false);
+          this.isItemCrossableFor(itemThePointIn, item) : false);
       })) {
         return false;
       } else {

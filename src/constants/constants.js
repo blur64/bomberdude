@@ -29,6 +29,30 @@ const actionKeys1 = {
 const actionKeys2 = {
   'KeyX': actions.PLANT_BOMB,
 };
+const textures = {
+  ARENA_GROUND: 'arena_ground',
+  ARENA_SECTION: 'arena_section',
+  WALL: 'wall',
+  BOMB: 'bomb',
+};
+const texturesUrls = {
+  [textures.ARENA_GROUND]: './assets/grass.png',
+  [textures.ARENA_SECTION]: './assets/wall.png',
+  [textures.WALL]: './assets/wall_destroyable.png',
+  [textures.BOMB]: './assets/bomb.png',
+};
+const spritesheets = {
+  CHARACTER: 'character',
+  EXPLOSION: 'explosion',
+};
+const spritesheetsImagesUrls = {
+  [spritesheets.CHARACTER]: './assets/dude_spritesheet.png',
+  [spritesheets.EXPLOSION]: './assets/explosion.png',
+};
+const spritesheetsDataUrls = {
+  [spritesheets.CHARACTER]: './assets/sprites.json',
+  [spritesheets.EXPLOSION]: './assets/explosion_data.json',
+};
 
 export {
   CELL_SIZE,
@@ -40,5 +64,10 @@ export {
   actionKeys1,
   actionKeys2,
   INITIAL_CHARACTER_VELOCITY_X,
-  INITIAL_CHARACTER_VELOCITY_Y
+  INITIAL_CHARACTER_VELOCITY_Y,
+  textures,
+  texturesUrls,
+  spritesheets,
+  spritesheetsImagesUrls,
+  spritesheetsDataUrls
 };

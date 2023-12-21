@@ -54,8 +54,6 @@ export default class Character {
   }
 
   kill() {
-    // БАГ! Персонаж сохраняет направление движения после того, как дотронулся
-    // до взрыва
     this.isDying = true;
     setTimeout(() => {
       this.isDead = true;

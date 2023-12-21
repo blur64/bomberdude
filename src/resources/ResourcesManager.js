@@ -1,4 +1,5 @@
 import { Assets, Spritesheet } from "pixi.js";
+import { texturesUrls, spritesheets, spritesheetsDataUrls, spritesheetsImagesUrls } from "../constants/constants";
 
 export default class ResourcesManager {
   constructor() {
@@ -14,29 +15,23 @@ export default class ResourcesManager {
     return this._spritesheets[spritesheetName];
   }
 
-  async load() {
-    const arenaGroundTexture = await Assets.load('./assets/grass.png');
-    const arenaSectionTexture = await Assets.load('./assets/wall.png');
-    const wallTexture = await Assets.load('./assets/wall_destroyable.png');
-    const bombTexture = await Assets.load('./assets/bomb.png');
+  load() {
+    Assets.addBundle('textures', texturesUrls);
+    Assets.addBundle('spritesheetsImages', spritesheetsImagesUrls);
+    Assets.addBundle('spritesheetsData', spritesheetsDataUrls);
 
-    this._textures.ground = arenaGroundTexture;
-    this._textures.arenaSection = arenaSectionTexture;
-    this._textures.wall = wallTexture;
-    this._textures.bomb = bombTexture;
-
-    const characterTexture = await Assets.load('./assets/dude_spritesheet.png');
-    const characterTextureData = await Assets.load('./assets/sprites.json');
-    const explosionTexture = await Assets.load('./assets/explosion.png');
-    const explosionTextureData = await Assets.load('./assets/explosion_data.json');
-
-    const characterSpritesheet = new Spritesheet(characterTexture, characterTextureData.data);
-    const explosionSpritesheet = new Spritesheet(explosionTexture, explosionTextureData.data);
-
-    await characterSpritesheet.parse();
-    await explosionSpritesheet.parse();
-
-    this._spritesheets.character = characterSpritesheet;
-    this._spritesheets.explosion = explosionSpritesheet;
+    return Promise.all([
+      Assets.loadBundle('textures'),
+      Assets.loadBundle('spritesheetsImages'),
+      Assets.loadBundle('spritesheetsData'),
+    ])
+      .then(bundles => {
+        this._textures = bundles[0];
+        Object.values(spritesheets).forEach(sheetName => {
+          const spritesheet = new Spritesheet(bundles[1][sheetName], bundles[2][sheetName].data);
+          spritesheet.parse()
+            .then(() => this._spritesheets[sheetName] = spritesheet);
+        });
+      });
   }
 }
