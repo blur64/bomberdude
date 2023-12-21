@@ -5,12 +5,12 @@ export default class CollisionsDetector {
 
   getOrientCollisions({ item, nextItemCoors }) {
     const collisions = {
-      vertical: this._detect(item.coors.x, nextItemCoors.y, item.sizeX, item.sizeY, item),
-      horizontal: this._detect(nextItemCoors.x, item.coors.y, item.sizeX, item.sizeY, item)
+      vertical: this._detect(item.coors.x, nextItemCoors.y, item.width, item.height, item),
+      horizontal: this._detect(nextItemCoors.x, item.coors.y, item.width, item.height, item)
     };
 
     const bothOrientsCollision = this
-      ._detect(nextItemCoors.x, nextItemCoors.y, item.sizeX, item.sizeY, item);
+      ._detect(nextItemCoors.x, nextItemCoors.y, item.width, item.height, item);
 
     if (!collisions.vertical && !collisions.horizontal && bothOrientsCollision)
       collisions.vertical = collisions.horizontal = true;
@@ -18,12 +18,12 @@ export default class CollisionsDetector {
     return collisions;
   }
 
-  _detect(x, y, sizeX, sizeY, item) {
+  _detect(x, y, width, height, item) {
     const itemVertices = [
       { x, y },
-      { x: x + sizeX, y },
-      { x: x + sizeX, y: y + sizeY },
-      { x, y: y + sizeY },
+      { x: x + width, y },
+      { x: x + width, y: y + height },
+      { x, y: y + height },
     ];
     return !itemVertices.every(p => {
       const itemThePointIn = this.arena.getItemThePointIn(p.x, p.y);

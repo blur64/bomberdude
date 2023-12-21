@@ -1,30 +1,20 @@
-import {
-  CHARACTER_SIZE,
-  INITIAL_CHARACTER_VELOCITY_X,
-  INITIAL_CHARACTER_VELOCITY_Y,
-  directions
-} from "../constants/constants.js";
+import { directions } from "../constants/constants.js";
 
 export default class MovementComponent {
-  constructor(coordinates, collisionsDetector, item) {
-    this.item = item;
-    this.coors = coordinates;
-    // Скорее всего эти состояния должны приходить извне как аргумент
-    // в метод update
-    this.inputDirectionsState = {
+  constructor({ collisionsDetector, item, velocityX, velocityY }) {
+    this._item = item;
+    this._inputDirectionsState = {
       isUp: false,
       isDown: false,
       isRight: false,
       isLeft: false,
     };
-    this.lookingDirection = directions.DOWN;
-    this.movementX = 0;
-    this.movementY = 0;
-    this.velocityX = INITIAL_CHARACTER_VELOCITY_X;
-    this.velocityY = INITIAL_CHARACTER_VELOCITY_Y;
-    this.collisionsDetector = collisionsDetector;
-    this.sizeX = CHARACTER_SIZE;
-    this.sizeY = CHARACTER_SIZE;
+    this._lookingDirection = directions.DOWN;
+    this._movementX = 0;
+    this._movementY = 0;
+    this._velocityX = velocityX;
+    this._velocityY = velocityY;
+    this._collisionsDetector = collisionsDetector;
   }
 
   update() {
@@ -35,121 +25,130 @@ export default class MovementComponent {
     this._updateCoors();
   }
 
+  get lookingDirection() {
+    return this._lookingDirection;
+  }
+  get movementX() {
+    return this._movementX;
+  }
+  get movementY() {
+    return this._movementY;
+  }
+
   _changeLookingDirection() {
-    if (this.movementX || this.movementY) {
-      if (this.movementX > 0) {
-        this.lookingDirection = directions.RIGHT;
-      } else if (this.movementX < 0) {
-        this.lookingDirection = directions.LEFT;
-      } else if (this.movementY > 0) {
-        this.lookingDirection = directions.DOWN;
-      } else if (this.movementY < 0) {
-        this.lookingDirection = directions.UP;
+    if (this._movementX || this._movementY) {
+      if (this._movementX > 0) {
+        this._lookingDirection = directions.RIGHT;
+      } else if (this._movementX < 0) {
+        this._lookingDirection = directions.LEFT;
+      } else if (this._movementY > 0) {
+        this._lookingDirection = directions.DOWN;
+      } else if (this._movementY < 0) {
+        this._lookingDirection = directions.UP;
       }
     } else {
-      if (this.inputDirectionsState.isUp) {
-        this.lookingDirection = directions.UP;
-      } else if (this.inputDirectionsState.isDown) {
-        this.lookingDirection = directions.DOWN;
-      } else if (this.inputDirectionsState.isRight) {
-        this.lookingDirection = directions.RIGHT;
-      } else if (this.inputDirectionsState.isLeft) {
-        this.lookingDirection = directions.LEFT;
+      if (this._inputDirectionsState.isUp) {
+        this._lookingDirection = directions.UP;
+      } else if (this._inputDirectionsState.isDown) {
+        this._lookingDirection = directions.DOWN;
+      } else if (this._inputDirectionsState.isRight) {
+        this._lookingDirection = directions.RIGHT;
+      } else if (this._inputDirectionsState.isLeft) {
+        this._lookingDirection = directions.LEFT;
       }
     }
   }
 
   _updateMovementsBasedOnAutoShift() {
-    if (Object.values(this.inputDirectionsState).some(v => v) &&
-      !this.movementX && !this.movementY) {
-      const charCenterX = Math.round(this.coors.x + CHARACTER_SIZE / 2);
-      const charCenterY = Math.round(this.coors.y + CHARACTER_SIZE / 2);
+    if (Object.values(this._inputDirectionsState).some(v => v) &&
+      !this._movementX && !this._movementY) {
+      const charCenterX = Math.round(this._item.coors.x + this._item.width / 2);
+      const charCenterY = Math.round(this._item.coors.y + this._item.height / 2);
       const cellX = Math.floor(charCenterX / 60) * 60;
       const cellY = Math.floor(charCenterY / 60) * 60;
 
-      if (this.coors.x < cellX) {
-        this.movementX = 1;
-      } else if (this.coors.x > cellX) {
-        this.movementX = -1;
-      } else if (this.coors.y < cellY) {
-        this.movementY = 1;
-      } else if (this.coors.y > cellY) {
-        this.movementY = -1;
+      if (this._item.coors.x < cellX) {
+        this._movementX = 1;
+      } else if (this._item.coors.x > cellX) {
+        this._movementX = -1;
+      } else if (this._item.coors.y < cellY) {
+        this._movementY = 1;
+      } else if (this._item.coors.y > cellY) {
+        this._movementY = -1;
       }
     }
   }
 
   _updateMovementsBasedOnCollisions() {
-    const { vertical, horizontal } = this.collisionsDetector
-      .getOrientCollisions({ nextItemCoors: this._getNextCoors(), item: this.item });
+    const { vertical, horizontal } = this._collisionsDetector
+      .getOrientCollisions({ nextItemCoors: this._getNextCoors(), item: this._item });
 
     if (vertical) {
-      this.movementY = 0;
+      this._movementY = 0;
     }
     if (horizontal) {
-      this.movementX = 0;
+      this._movementX = 0;
     }
   }
 
   _updateCoors() {
     const { x: nextX, y: nextY } = this._getNextCoors();
-    this.coors.x = nextX;
-    this.coors.y = nextY;
+    this._item.coors.x = nextX;
+    this._item.coors.y = nextY;
   }
 
   _getNextCoors() {
     return {
-      x: this.coors.x + this.movementX * this.velocityX,
-      y: this.coors.y + this.movementY * this.velocityY
+      x: this._item.coors.x + this._movementX * this._velocityX,
+      y: this._item.coors.y + this._movementY * this._velocityY
     };
   }
 
   _updateMovementsBasedOnInputDirections() {
-    if (this.inputDirectionsState.isUp) {
-      this.movementY = -1;
+    if (this._inputDirectionsState.isUp) {
+      this._movementY = -1;
     }
-    if (this.inputDirectionsState.isDown) {
-      this.movementY = 1;
+    if (this._inputDirectionsState.isDown) {
+      this._movementY = 1;
     }
-    if (this.inputDirectionsState.isDown &&
-      this.inputDirectionsState.isUp ||
-      !this.inputDirectionsState.isDown &&
-      !this.inputDirectionsState.isUp) {
-      this.movementY = 0;
+    if (this._inputDirectionsState.isDown &&
+      this._inputDirectionsState.isUp ||
+      !this._inputDirectionsState.isDown &&
+      !this._inputDirectionsState.isUp) {
+      this._movementY = 0;
     }
 
-    if (this.inputDirectionsState.isRight) {
-      this.movementX = 1;
+    if (this._inputDirectionsState.isRight) {
+      this._movementX = 1;
     }
-    if (this.inputDirectionsState.isLeft) {
-      this.movementX = -1;
+    if (this._inputDirectionsState.isLeft) {
+      this._movementX = -1;
     }
-    if (this.inputDirectionsState.isRight &&
-      this.inputDirectionsState.isLeft ||
-      !this.inputDirectionsState.isRight &&
-      !this.inputDirectionsState.isLeft) {
-      this.movementX = 0;
+    if (this._inputDirectionsState.isRight &&
+      this._inputDirectionsState.isLeft ||
+      !this._inputDirectionsState.isRight &&
+      !this._inputDirectionsState.isLeft) {
+      this._movementX = 0;
     }
   }
-
 
   setMoveUp(isMove) {
-    this.inputDirectionsState.isUp = isMove;
+    this._inputDirectionsState.isUp = isMove;
   }
   setMoveDown(isMove) {
-    this.inputDirectionsState.isDown = isMove;
+    this._inputDirectionsState.isDown = isMove;
   }
   setMoveLeft(isMove) {
-    this.inputDirectionsState.isLeft = isMove;
+    this._inputDirectionsState.isLeft = isMove;
   }
   setMoveRight(isMove) {
-    this.inputDirectionsState.isRight = isMove;
+    this._inputDirectionsState.isRight = isMove;
   }
 }
 
 // _updateMovementsBasedOnModificators() {
 //   if (this.entity.modificators.reversedMoves) {
-//     this.movementX = -this.movementX;
-//     this.movementY = -this.movementY;
+//     this._movementX = -this._movementX;
+//     this._movementY = -this._movementY;
 //   }
 // }

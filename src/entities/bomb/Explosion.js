@@ -1,5 +1,5 @@
 export default class Explosion {
-  constructor(x, y, duration, arena) {
+  constructor({ x, y, duration, arena }) {
     this.coors = { x, y };
     this.arena = arena;
     setTimeout(() => this._destroySelf(), duration);

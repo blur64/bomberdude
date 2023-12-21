@@ -71,8 +71,12 @@ export default class Arena {
       .forEach(bc => {
         const markedToRemove = [];
         bc.crossableFor.forEach(i => {
-          if (Math.abs(i.coors.x - bc.item.coors.x) > bc.item.sizeX ||
-            Math.abs(i.coors.y - bc.item.coors.y) > bc.item.sizeY) {
+          // if (Math.abs(i.coors.x - bc.item.coors.x) > bc.item.sizeX ||
+          //   Math.abs(i.coors.y - bc.item.coors.y) > bc.item.sizeY) {
+          //   markedToRemove.push(i);
+          // }
+          if (Math.abs(i.coors.x - bc.item.coors.x) > bc.item.width ||
+            Math.abs(i.coors.y - bc.item.coors.y) > bc.item.height) {
             markedToRemove.push(i);
           }
         });
@@ -199,8 +203,10 @@ export default class Arena {
     return this._characters.filter(c => {
       const x = c.coors.x;
       const y = c.coors.y;
-      const sizeX = c.movementComponent.sizeX;
-      const sizeY = c.movementComponent.sizeY;
+      // const sizeX = c.movementComponent.sizeX;
+      // const sizeY = c.movementComponent.sizeY;
+      const sizeX = c.width;
+      const sizeY = c.height;
       const pointsToCheck = [
         { x, y },
         { x: x + sizeX, y },
