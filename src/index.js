@@ -1,12 +1,18 @@
 import { Application } from 'pixi.js';
-import { CELL_SIZE, actionKeys1, movementKeys1, textures, spritesheets } from './constants/constants.js';
 import ResourcesManager from './resources/ResourcesManager.js';
 import Arena from './entities/arena/Arena.js';
 import Character from './entities/character/Character.js';
 import CharacterController from './input/CharacterController.js';
 import AICharacterController from './input/AICHaracterController.js';
 import ViewsController from './views/ViewsController.js';
-import ArenaView from './views/ArenaView.js'
+import ArenaView from './views/ArenaView.js';
+import {
+  CELL_SIZE,
+  actionKeys1,
+  movementKeys1,
+  textures,
+  spritesheets
+} from './constants/constants.js';
 
 function start() {
   const resources = new ResourcesManager();
@@ -31,15 +37,21 @@ function start() {
 
     const arenaView = new ArenaView(arena, resources.getTexture(textures.ARENA_GROUND), app.stage);
     arenaView.renderGround();
-    const viewsController = new ViewsController(
+
+    const viewsController = new ViewsController({
       arena,
-      resources.getSpritesheet(spritesheets.EXPLOSION).animations.default,
-      resources.getSpritesheet(spritesheets.CHARACTER).animations,
-      resources.getTexture(textures.ARENA_SECTION),
-      resources.getTexture(textures.WALL),
-      resources.getTexture(textures.BOMB),
-      app.stage
-    );
+      stage: app.stage,
+      viewsTextures: {
+        [textures.ARENA_SECTION]: resources.getTexture(textures.ARENA_SECTION),
+        [textures.WALL]: resources.getTexture(textures.WALL),
+        [textures.BOMB]: resources.getTexture(textures.BOMB),
+      },
+      viewsSpritesheets: {
+        [spritesheets.EXPLOSION]: resources.getSpritesheet(spritesheets.EXPLOSION),
+        [spritesheets.CHARACTER]: resources.getSpritesheet(spritesheets.CHARACTER),
+      }
+    });
+
     app.ticker.add(() => {
       arena.update();
       aiCharacterController.update();

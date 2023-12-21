@@ -1,5 +1,10 @@
 import { Assets, Spritesheet } from "pixi.js";
-import { texturesUrls, spritesheets, spritesheetsDataUrls, spritesheetsImagesUrls } from "../constants/constants";
+import {
+  texturesUrls,
+  spritesheets,
+  spritesheetsDataUrls,
+  spritesheetsImagesUrls
+} from "../constants/constants";
 
 export default class ResourcesManager {
   constructor() {
