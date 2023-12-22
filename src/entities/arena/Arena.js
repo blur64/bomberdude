@@ -1,4 +1,4 @@
-import { CELL_SIZE, CHARACTER_SIZE, directions } from "../../constants/constants.js";
+import { CELL_SIZE, CHARACTER_SIZE, directions, INITIAL_BOMB_POWER } from "../../constants/constants.js";
 import ArenaSection from "./ArenaSection.js";
 import Wall from "../wall/Wall.js";
 import Bomb from "../bomb/Bomb.js";
@@ -257,126 +257,40 @@ export default class Arena {
     return !this._characters.includes(character);
   }
 
+  _areThereBombsAroundTheCell(row, column) {
+    for (let degr = 0; degr < 360; degr += 90) {
+      const degrSin = Math.round(Math.sin(degr * Math.PI / 180));
+      const degrCos = Math.round(Math.cos(degr * Math.PI / 180));
+
+      for (let j = 0; j < INITIAL_BOMB_POWER; j++) {
+        if (column + j * degrCos > this._colsCount - 1 ||
+          column + j * degrCos < 0 ||
+          row + j * degrSin > this._rowsCount - 1 ||
+          row + j * degrSin < 0) {
+          break;
+        }
+        const anItem = this._items[row + j * degrSin][column + j * degrCos];
+        if (anItem instanceof Wall || anItem instanceof ArenaSection) {
+          break;
+        }
+        if (anItem instanceof Bomb) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   getClearDirectionsFor(item) {
     let isNeedToFindWaysWithExplosionsInFuture = true;
-    const indexesOfCellTheItemIn1 = this
-      ._getIndexesOfCellThePointIn(item.coors.x, item.coors.y);
-    const indexesOfCellTheItemIn2 = this
-      ._getIndexesOfCellThePointIn(item.coors.x + CHARACTER_SIZE, item.coors.y + CHARACTER_SIZE);
-
-    // first
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn1[1] + i > this._colsCount - 1) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn1[0]][indexesOfCellTheItemIn1[1] + i];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
+    [
+      this._getIndexesOfCellThePointIn(item.coors.x, item.coors.y),
+      this._getIndexesOfCellThePointIn(item.coors.x + CHARACTER_SIZE, item.coors.y + CHARACTER_SIZE)
+    ].forEach(cellIndexes => {
+      if (this._areThereBombsAroundTheCell(cellIndexes[0], cellIndexes[1])) {
         isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
       }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn1[1] - i < 0) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn1[0]][indexesOfCellTheItemIn1[1] - i];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn1[0] + i > this._rowsCount - 1) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn1[0] + i][indexesOfCellTheItemIn1[1]];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn1[0] - i < 0) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn1[0] - i][indexesOfCellTheItemIn1[1]];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    // second
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn2[1] + i > this._colsCount - 1) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn2[0]][indexesOfCellTheItemIn2[1] + i];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn2[1] - i < 0) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn2[0]][indexesOfCellTheItemIn2[1] - i];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn2[0] + i > this._rowsCount - 1) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn2[0] + i][indexesOfCellTheItemIn2[1]];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (indexesOfCellTheItemIn2[0] - i < 0) {
-        break;
-      }
-      const anItem = this._items[indexesOfCellTheItemIn2[0] - i][indexesOfCellTheItemIn2[1]];
-      if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-        break;
-      }
-      if (anItem instanceof Bomb) {
-        isNeedToFindWaysWithExplosionsInFuture = false;
-        break;
-      }
-    }
+    })
 
     return Object.values(directions).filter(d => {
       let coorsToCheck = { x: item.coors.x, y: item.coors.y };
@@ -406,82 +320,30 @@ export default class Arena {
           this.isItemCrossableFor(itemThePointIn, item) : false);
       })) {
         return false;
-      } else {
-        if (!isNeedToFindWaysWithExplosionsInFuture) {
-          return true;
-        }
-        const pToCheck = { x: item.coors.x, y: item.coors.y };
-        switch (d) {
-          case directions.UP:
-            pToCheck.y -= 1;
-            break;
-          case directions.RIGHT:
-            pToCheck.x += CELL_SIZE;
-            break;
-          case directions.DOWN:
-            pToCheck.y += CELL_SIZE;
-            break;
-          case directions.LEFT:
-            pToCheck.x -= 1;
-            break;
-        }
-
-        const indexesOfCellWhereItemWillBe = this._getIndexesOfCellThePointIn(pToCheck.x, pToCheck.y);
-
-        for (let i = 0; i < 4; i++) {
-          if (indexesOfCellWhereItemWillBe[1] + i > this._colsCount - 1) {
-            break;
-          }
-          const anItem = this._items[indexesOfCellWhereItemWillBe[0]][indexesOfCellWhereItemWillBe[1] + i];
-          if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-            break;
-          }
-          if (anItem instanceof Bomb) {
-            return false;
-          }
-        }
-
-        for (let i = 0; i < 4; i++) {
-          if (indexesOfCellWhereItemWillBe[1] - i < 0) {
-            break;
-          }
-          const anItem = this._items[indexesOfCellWhereItemWillBe[0]][indexesOfCellWhereItemWillBe[1] - i];
-          if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-            break;
-          }
-          if (anItem instanceof Bomb) {
-            return false;
-          }
-        }
-
-        for (let i = 0; i < 4; i++) {
-          if (indexesOfCellWhereItemWillBe[0] + i > this._rowsCount - 1) {
-            break;
-          }
-          const anItem = this._items[indexesOfCellWhereItemWillBe[0] + i][indexesOfCellWhereItemWillBe[1]];
-          if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-            break;
-          }
-          if (anItem instanceof Bomb) {
-            return false;
-          }
-        }
-
-        for (let i = 0; i < 4; i++) {
-          if (indexesOfCellWhereItemWillBe[0] - i < 0) {
-            break;
-          }
-          const anItem = this._items[indexesOfCellWhereItemWillBe[0] - i][indexesOfCellWhereItemWillBe[1]];
-          if (anItem instanceof Wall || anItem instanceof ArenaSection) {
-            break;
-          }
-          if (anItem instanceof Bomb) {
-            return false;
-          }
-        }
-
+      }
+      if (!isNeedToFindWaysWithExplosionsInFuture) {
         return true;
       }
+      const pToCheck = { x: item.coors.x, y: item.coors.y };
+      switch (d) {
+        case directions.UP:
+          pToCheck.y -= 1;
+          break;
+        case directions.RIGHT:
+          pToCheck.x += CELL_SIZE;
+          break;
+        case directions.DOWN:
+          pToCheck.y += CELL_SIZE;
+          break;
+        case directions.LEFT:
+          pToCheck.x -= 1;
+          break;
+      }
+      const indexesOfCellWhereItemWillBe = this._getIndexesOfCellThePointIn(pToCheck.x, pToCheck.y);
+      if (this._areThereBombsAroundTheCell(indexesOfCellWhereItemWillBe[0], indexesOfCellWhereItemWillBe[1])) {
+        return false;
+      }
+      return true;
     });
   }
 }

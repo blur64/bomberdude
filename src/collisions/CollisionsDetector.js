@@ -1,6 +1,6 @@
 export default class CollisionsDetector {
   constructor(arena) {
-    this.arena = arena;
+    this._arena = arena;
   }
 
   getOrientCollisions({ item, nextItemCoors }) {
@@ -26,13 +26,13 @@ export default class CollisionsDetector {
       { x, y: y + height },
     ];
     return !itemVertices.every(p => {
-      const itemThePointIn = this.arena.getItemThePointIn(p.x, p.y);
+      const itemThePointIn = this._arena.getItemThePointIn(p.x, p.y);
       if (itemThePointIn === undefined) {
         return false;
       } else if (!itemThePointIn) {
         return true;
       } else {
-        return this.arena.isItemCrossableFor(itemThePointIn, item);
+        return this._arena.isItemCrossableFor(itemThePointIn, item);
       }
     });
   }

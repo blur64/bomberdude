@@ -5,8 +5,8 @@ export default class CharacterView extends AnimatedSprite {
   constructor(animations, model, dyingAnimationTime) {
     super(Object.values(animations)[0]);
     this._animations = animations;
-    this.dyingAnimationTime = dyingAnimationTime;
-    this.animationSpeed = 0.4;
+    // this.dyingAnimationTime = dyingAnimationTime;
+    this.animationSpeed = 0.25;
     this.model = model;
     this.x = model.coors.x;
     this.y = model.coors.y;
@@ -15,6 +15,7 @@ export default class CharacterView extends AnimatedSprite {
     const [paddingX, paddingY] = this._calculatePaddings();
     this._paddingX = paddingX;
     this._paddingY = paddingY;
+    this.isDyingAnimationOn = false;
     this.onFrameChange = () => {
       if (this.currentFrame === 0 && this.playing) {
         this.gotoAndPlay(1);
@@ -39,6 +40,19 @@ export default class CharacterView extends AnimatedSprite {
   }
 
   _animate() {
+    if (this.model.isDying && !this.isDyingAnimationOn) {
+      this.isDyingAnimationOn = true;
+      const red = 0xFF0000;
+      const initial = this.tint;
+      this.tint = red;
+      setInterval(() => {
+        if (this.tint === red) {
+          this.tint = initial;
+        } else {
+          this.tint = red;
+        }
+      }, 250);
+    }
     if (!this.model.movementComponent.movementX &&
       !this.model.movementComponent.movementY)
       this.gotoAndStop(0);

@@ -94,6 +94,8 @@ export default class Character {
 
   kill() {
     this._isDying = true;
+    this._movementComponent.finishMove();
+    this._movementComponent.update();
     setTimeout(() => {
       this._isDead = true;
       this._isDying = false;

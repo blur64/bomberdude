@@ -144,6 +144,11 @@ export default class MovementComponent {
   setMoveRight(isMove) {
     this._inputDirectionsState.isRight = isMove;
   }
+
+  finishMove() {
+    Object.keys(this._inputDirectionsState)
+      .forEach(dirStateKey => this._inputDirectionsState[dirStateKey] = false);
+  }
 }
 
 // _updateMovementsBasedOnModificators() {

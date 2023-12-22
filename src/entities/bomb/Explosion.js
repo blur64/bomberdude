@@ -1,7 +1,7 @@
 export default class Explosion {
   constructor({ x, y, duration, arena }) {
     this.coors = { x, y };
-    this.arena = arena;
+    this._arena = arena;
     setTimeout(() => this._destroySelf(), duration);
     // ПОДПИСАТЬСЯ НА СОБЫТИЕ ВЗРЫВА???
   }
@@ -17,6 +17,6 @@ export default class Explosion {
   }
 
   _destroySelf() {
-    this.arena.removeItem(this);
+    this._arena.removeItem(this);
   }
 }

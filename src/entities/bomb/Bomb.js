@@ -4,11 +4,11 @@ import Explosion from "./Explosion.js";
 export default class Bomb {
   constructor({ x, y, power, detonationTimeout, arena, bombSize }) {
     this.coors = { x, y };
-    this.detonationTimeout = detonationTimeout;
+    this._detonationTimeout = detonationTimeout;
     this._width = bombSize;
     this._height = bombSize;
-    this.power = power;
-    this.arena = arena;
+    this._power = power;
+    this._arena = arena;
     this._detonationTimerID = '';
   }
 
@@ -20,7 +20,7 @@ export default class Bomb {
   }
 
   turnOnTimer() {
-    this._detonationTimerID = setTimeout(() => this._detonate(), this.detonationTimeout);
+    this._detonationTimerID = setTimeout(() => this._detonate(), this._detonationTimeout);
   }
 
   destroy() {
@@ -29,29 +29,29 @@ export default class Bomb {
   }
 
   _detonate() {
-    this.arena.removeItem(this);
-    this.arena.addItem(new Explosion({
+    this._arena.removeItem(this);
+    this._arena.addItem(new Explosion({
       x: this.coors.x,
       y: this.coors.y,
       duration: EXPLOSION_DURATION,
-      arena: this.arena
+      arena: this._arena
     }));
 
     for (let degr = 0; degr < 360; degr += 90) {
       const degrSin = Math.round(Math.sin(degr * Math.PI / 180));
       const degrCos = Math.round(Math.cos(degr * Math.PI / 180));
 
-      for (let j = 1; j < this.power; j++) {
+      for (let j = 1; j < this._power; j++) {
         const explosionX = this.coors.x + degrCos * CELL_SIZE * j;
         const explosionY = this.coors.y + degrSin * CELL_SIZE * j;
-        const itemOnTheExplosionWay = this.arena
+        const itemOnTheExplosionWay = this._arena
           .getItemThePointIn(explosionX, explosionY);
 
         if (itemOnTheExplosionWay === undefined) {
           break;
         }
         if (itemOnTheExplosionWay && !(itemOnTheExplosionWay instanceof Explosion)) {
-          if (this.arena.isItemDestroyable(itemOnTheExplosionWay)) {
+          if (this._arena.isItemDestroyable(itemOnTheExplosionWay)) {
             itemOnTheExplosionWay.destroy(EXPLOSION_DURATION);
           }
           break;
@@ -61,9 +61,9 @@ export default class Bomb {
           x: explosionX,
           y: explosionY,
           duration: EXPLOSION_DURATION,
-          arena: this.arena
+          arena: this._arena
         });
-        this.arena.addItem(explosion);
+        this._arena.addItem(explosion);
       }
     }
   }
