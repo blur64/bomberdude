@@ -2,10 +2,9 @@ import { AnimatedSprite } from 'pixi.js';
 import { CELL_SIZE, directions } from '../constants/constants.js';
 
 export default class CharacterView extends AnimatedSprite {
-  constructor(animations, model, dyingAnimationTime) {
+  constructor(animations, model) {
     super(Object.values(animations)[0]);
     this._animations = animations;
-    // this.dyingAnimationTime = dyingAnimationTime;
     this.animationSpeed = 0.25;
     this.model = model;
     this.x = model.coors.x;

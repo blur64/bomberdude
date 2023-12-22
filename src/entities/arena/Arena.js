@@ -129,16 +129,25 @@ export default class Arena {
   }
 
   _generateArenaSections() {
-    let row = 1;
-    let column = 1;
+    for (let i = 0; i < this._colsCount; i++) {
+      this._items[0][i] = new ArenaSection(i * CELL_SIZE, 0, this);
+      this._items[this._rowsCount - 1][i] = new ArenaSection(i * CELL_SIZE, (this._rowsCount - 1) * CELL_SIZE, this);
+    }
+    for (let i = 0; i < this._rowsCount; i++) {
+      this._items[i][0] = new ArenaSection(0, i * CELL_SIZE, this);
+      this._items[i][this._colsCount - 1] = new ArenaSection((this._colsCount - 1) * CELL_SIZE, i * CELL_SIZE, this);
+    }
 
-    while (row < this._rowsCount) {
-      while (column < this._colsCount) {
+    let row = 2;
+    let column = 2;
+
+    while (row < this._rowsCount - 2) {
+      while (column < this._colsCount - 2) {
         this._items[row][column] = new ArenaSection(column * CELL_SIZE, row * CELL_SIZE, this);
         column += 2;
       }
       row += 2;
-      column = 1;
+      column = 2;
     }
   }
 
@@ -155,8 +164,8 @@ export default class Arena {
     while (i < wallsCount) {
       const row = Math.round(Math.random() * (this._rowsCount - 1));
       const column = Math.round(Math.random() * (this._colsCount - 1));
-      const gotIndexesOfCellIsEmptyAtStart = (row <= 1 || row >= this._rowsCount - 2) &&
-        (column <= 1 || column >= this._colsCount - 2);
+      const gotIndexesOfCellIsEmptyAtStart = (row <= 2 || row >= this._rowsCount - 3) &&
+        (column <= 2 || column >= this._colsCount - 3);
       const cellIsFilled = this._items[row][column];
 
       if (cellIsFilled || gotIndexesOfCellIsEmptyAtStart) {

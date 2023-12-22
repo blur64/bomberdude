@@ -1,9 +1,10 @@
 import { Sprite } from "pixi.js";
 
 export default class ArenaView {
-  constructor(arena, groundTexture, stage) {
+  constructor(arena, groundTexture, borderTexture, stage) {
     this.arena = arena;
     this.groundTexture = groundTexture;
+    this.borderTexture = borderTexture;
     this.CELL_SIZE = 60;
     this.stage = stage;
   }

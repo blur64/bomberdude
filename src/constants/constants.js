@@ -10,8 +10,8 @@ const CHARACTER_DYING_TIME = 2000;
 const CHARACTER_HITBOX_PADDING = 20;
 const CHARACTER_HITBOX_WIDTH = 20;
 const CHARACTER_HITBOX_HEIGHT = 20;
-const ARENA_COLS_COUNT = 15;
-const ARENA_ROWS_COUNT = 11;
+const ARENA_COLS_COUNT = 17;
+const ARENA_ROWS_COUNT = 13;
 const directions = {
   UP: 'up',
   DOWN: 'down',

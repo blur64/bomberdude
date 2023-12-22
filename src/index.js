@@ -42,29 +42,29 @@ function createCharacter(characterParams) {
 function start() {
   const resources = new ResourcesManager();
   resources.load().then(() => {
-    const app = new Application({ width: 1000, height: 800 });
+    const app = new Application({ width: ARENA_COLS_COUNT * CELL_SIZE, height: ARENA_ROWS_COUNT * CELL_SIZE });
     document.body.appendChild(app.view);
 
     const arena = new Arena(ARENA_ROWS_COUNT, ARENA_COLS_COUNT);
 
     const character = createCharacter({
-      initialX: 0,
-      initialY: 0,
+      initialX: CELL_SIZE,
+      initialY: CELL_SIZE,
       arena
     });
     const aiCharacter = createCharacter({
-      initialX: 0,
-      initialY: (ARENA_ROWS_COUNT - 1) * CELL_SIZE,
+      initialX: CELL_SIZE,
+      initialY: (ARENA_ROWS_COUNT - 2) * CELL_SIZE,
       arena
     });
     const aiCharacter2 = createCharacter({
-      initialX: (ARENA_COLS_COUNT - 1) * CELL_SIZE,
-      initialY: 0,
+      initialX: (ARENA_COLS_COUNT - 2) * CELL_SIZE,
+      initialY: CELL_SIZE,
       arena
     });
     const aiCharacter3 = createCharacter({
-      initialX: (ARENA_COLS_COUNT - 1) * CELL_SIZE,
-      initialY: (ARENA_ROWS_COUNT - 1) * CELL_SIZE,
+      initialX: (ARENA_COLS_COUNT - 2) * CELL_SIZE,
+      initialY: (ARENA_ROWS_COUNT - 2) * CELL_SIZE,
       arena
     });
     new PlayerCharacterController(character, movementKeys1, actionKeys1);
@@ -76,7 +76,12 @@ function start() {
     arena.addCharacter(aiCharacter2);
     arena.addCharacter(aiCharacter3);
 
-    const arenaView = new ArenaView(arena, resources.getTexture(textures.ARENA_GROUND), app.stage);
+    const arenaView = new ArenaView(
+      arena,
+      resources.getTexture(textures.ARENA_GROUND),
+      resources.getTexture(textures.ARENA_SECTION),
+      app.stage
+    );
     arenaView.renderGround();
 
     const viewsController = new ViewsController({

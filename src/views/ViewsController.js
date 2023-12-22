@@ -77,7 +77,7 @@ export default class ViewsController {
   _createViewOf(item) {
     let view = null;
     if (item instanceof Character) {
-      view = new CharacterView(this._spritesheets[spritesheets.CHARACTER].animations, item, 2000);
+      view = new CharacterView(this._spritesheets[spritesheets.CHARACTER].animations, item);
     } else if (item instanceof Wall) {
       view = new WallView(this._textures[textures.WALL], item);
     } else if (item instanceof ArenaSection) {
