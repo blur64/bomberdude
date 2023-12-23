@@ -5,6 +5,13 @@ export default class CharacterController {
     this._character = character;
   }
 
+  set character(newCharacter) {
+    this._character = newCharacter;
+  }
+  get character() {
+    return this._character;
+  }
+
   _setCharacterMove(direction, isMove) {
     switch (direction) {
       case directions.UP:

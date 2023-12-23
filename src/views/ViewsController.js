@@ -83,7 +83,7 @@ export default class ViewsController {
     } else if (item instanceof ArenaSection) {
       view = new ArenaSectionView(this._textures[textures.ARENA_SECTION], item);
     } else if (item instanceof Bomb) {
-      view = new BombView(this._textures[textures.BOMB], item);
+      view = new BombView(this._spritesheets[spritesheets.BOMB].animations.default, item);
     } else if (item instanceof Explosion) {
       view = new ExplosionView(this._spritesheets[spritesheets.EXPLOSION].animations.default, item);
     }

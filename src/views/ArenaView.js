@@ -1,11 +1,10 @@
 import { Sprite } from "pixi.js";
+import { CELL_SIZE } from "../constants/constants";
 
 export default class ArenaView {
-  constructor(arena, groundTexture, borderTexture, stage) {
+  constructor(arena, groundTexture, stage) {
     this.arena = arena;
     this.groundTexture = groundTexture;
-    this.borderTexture = borderTexture;
-    this.CELL_SIZE = 60;
     this.stage = stage;
   }
 
@@ -13,8 +12,8 @@ export default class ArenaView {
     for (let row = 0; row < this.arena.rowsCount; row++) {
       for (let col = 0; col < this.arena.colsCount; col++) {
         const groundSprite = new Sprite(this.groundTexture);
-        groundSprite.x = col * this.CELL_SIZE;
-        groundSprite.y = row * this.CELL_SIZE;
+        groundSprite.x = col * CELL_SIZE;
+        groundSprite.y = row * CELL_SIZE;
         this.stage.addChild(groundSprite);
       }
     }

@@ -8,7 +8,7 @@ export default class ExplosionView extends AnimatedSprite {
     const [paddingX, paddingY] = this._calculatePaddings();
     this.x = model.coors.x + paddingX;
     this.y = model.coors.y + paddingY;
-    this.animationSpeed = 0.1;
+    this.animationSpeed = 0.13;
     this.loop = false;
     this.play();
   }

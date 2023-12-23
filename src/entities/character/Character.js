@@ -33,6 +33,7 @@ export default class Character {
       velocityX: INITIAL_CHARACTER_VELOCITY_X,
       velocityY: INITIAL_CHARACTER_VELOCITY_Y
     });
+    this._isPlayerCharacter = false;
   }
 
   update() {
@@ -43,6 +44,12 @@ export default class Character {
     this._updateHitbox();
   }
 
+  setPlayerCharacter() {
+    this._isPlayerCharacter = true;
+  }
+  get isPlayerCharacter() {
+    return this._isPlayerCharacter;
+  }
   get isDead() {
     return this._isDead;
   }

@@ -5,6 +5,8 @@ export default class WallView extends Sprite {
   constructor(texture, model) {
     super(texture);
     this.model = model;
+    this.scale.x = 0.47;
+    this.scale.y = 0.47;
     const [paddingX, paddingY] = this._calculatePaddings();
     this.x = model.coors.x + paddingX;
     this.y = model.coors.y + paddingY;

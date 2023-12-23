@@ -18,15 +18,28 @@ export default class PlayerCharacterController extends CharacterController {
     });
   }
 
+  removeCharacter() {
+    this._character = null;
+  }
+
   _onStartMove(key) {
+    if (!this._character) {
+      return;
+    }
     this._setCharacterMove(this._keyToDirection[key], true);
   }
 
   _onFinishMove(key) {
+    if (!this._character) {
+      return;
+    }
     this._setCharacterMove(this._keyToDirection[key], false);
   }
 
   _onAction(key) {
+    if (!this._character) {
+      return;
+    }
     switch (this._keyToAction[key]) {
       case actions.PLANT_BOMB:
         this._character.plantBomb();
