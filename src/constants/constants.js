@@ -44,13 +44,11 @@ const textures = {
   ARENA_GROUND: 'arena_ground',
   ARENA_SECTION: 'arena_section',
   WALL: 'wall',
-  // BOMB: 'bomb',
 };
 const texturesUrls = {
   [textures.ARENA_GROUND]: './assets/grass.png',
   [textures.ARENA_SECTION]: './assets/wall.png',
   [textures.WALL]: './assets/wall_destroyable.png',
-  // [textures.BOMB]: './assets/bomb.png',
 };
 const spritesheets = {
   CHARACTER: 'character',
