@@ -6,3 +6,16 @@ export function areDirectionsOpposite(dir1, dir2) {
     || dir1 === directions.RIGHT && dir2 === directions.LEFT
     || dir1 === directions.LEFT && dir2 === directions.RIGHT;
 }
+
+export function getOppositeDirection(direction) {
+  switch (direction) {
+    case directions.UP:
+      return directions.DOWN;
+    case directions.DOWN:
+      return directions.UP;
+    case directions.LEFT:
+      return directions.RIGHT;
+    case directions.RIGHT:
+      return directions.LEFT;
+  }
+}

@@ -3,6 +3,7 @@ export default class Wall {
     this.coors = { x, y };
     this._arena = arena;
     this._isDestroing = false;
+    this._isDestroyed = false;
   }
 
   get isDestroing() {
@@ -11,6 +12,9 @@ export default class Wall {
 
   destroy(destroingTime) {
     this._isDestroing = true;
-    setTimeout(() => this._arena.removeItem(this), destroingTime);
+    setTimeout(() => {
+      this._isDestroyed = true;
+      this._arena.removeItem(this)
+    }, destroingTime);
   }
 }

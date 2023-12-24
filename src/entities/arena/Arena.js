@@ -212,8 +212,6 @@ export default class Arena {
     return this._characters.filter(c => {
       const x = c.coors.x;
       const y = c.coors.y;
-      // const sizeX = c.movementComponent.sizeX;
-      // const sizeY = c.movementComponent.sizeY;
       const sizeX = c.width;
       const sizeY = c.height;
       const pointsToCheck = [
@@ -355,4 +353,75 @@ export default class Arena {
       return true;
     });
   }
+
+  isThereDeadlockOnTheDirectionFor(direction, item) {
+    let [currRow, currCol] = this._getIndexesOfCellThePointIn(item.coors.x, item.coors.y);
+    let rowSumFactor = 0;
+    let columnSumFactor = 0;
+    switch (direction) {
+      case directions.UP:
+        rowSumFactor = -1;
+        break;
+      case directions.DOWN:
+        rowSumFactor = 1;
+        break;
+      case directions.RIGHT:
+        columnSumFactor = 1;
+        break;
+      case directions.LEFT:
+        columnSumFactor = -1;
+        break;
+    }
+    let i = 0;
+    let indexRowSumm = rowSumFactor;
+    let indexColumnSumm = columnSumFactor;
+    while (i < INITIAL_BOMB_POWER) {
+      const itemOnTheDirection = this._items[currRow + indexRowSumm][currCol + indexColumnSumm];
+      if (!itemOnTheDirection) {
+        if (direction === directions.UP || direction === directions.DOWN) {
+          const itemOnLeftSide = this._items[currRow + indexRowSumm][currCol + indexColumnSumm - 1];
+          const itemOnRightSide = this._items[currRow + indexRowSumm][currCol + indexColumnSumm + 1];
+          if (this.isItemCrossableFor(itemOnLeftSide, item) || this.isItemCrossableFor(itemOnRightSide, item)) {
+            return false;
+          }
+        } else {
+          const itemOnTopSide = this._items[currRow + indexRowSumm - 1][currCol + indexColumnSumm];
+          const itemOnBottomSide = this._items[currRow + indexRowSumm + 1][currCol + indexColumnSumm];
+          if (this.isItemCrossableFor(itemOnTopSide, item) || this.isItemCrossableFor(itemOnBottomSide, item)) {
+            return false;
+          }
+        }
+        indexRowSumm += rowSumFactor;
+        indexColumnSumm += columnSumFactor;
+        i++;
+        continue;
+      }
+      if (!this.isItemCrossableFor(itemOnTheDirection, item)) {
+        return true;
+      }
+      indexRowSumm += rowSumFactor;
+      indexColumnSumm += columnSumFactor;
+      i++;
+    }
+    return false;
+  }
+
+  areThereAnyExplosionsAround(item) {
+    const [row, col] = this._getIndexesOfCellThePointIn(item.coors.x, item.coors.y);
+    const itemsToCheck = [
+      this._items[row + 1][col],
+      this._items[row - 1][col],
+      this._items[row][col + 1],
+      this._items[row][col - 1],
+    ];
+    return itemsToCheck.some(i => i instanceof Explosion);
+  }
+
+  // isCharacterInBomb(character) {
+  //   const [row, col] = this._getIndexesOfCellThePointIn(character.coors.x, character.coors.y);
+  //   if (this._items[row][col] instanceof Bomb) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

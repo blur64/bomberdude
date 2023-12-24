@@ -45,6 +45,7 @@ class Match {
 
   _initGameObjects() {
     this._arena = new Arena(ARENA_ROWS_COUNT, ARENA_COLS_COUNT);
+    console.log(this._arena.isThereDeadlockOnTheDirectionFor('down', { coors: { x: CELL_SIZE, y: CELL_SIZE } }));
     const characters = this._initCharacters();
     this._characters = [...characters];
     characters.forEach(c => this._arena.addCharacter(c));

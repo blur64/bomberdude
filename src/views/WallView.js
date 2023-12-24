@@ -10,9 +10,23 @@ export default class WallView extends Sprite {
     const [paddingX, paddingY] = this._calculatePaddings();
     this.x = model.coors.x + paddingX;
     this.y = model.coors.y + paddingY;
+    this._timeOfLastDyingAnimationChange = 0;
+    this._isDestroingAnimationOn = false;
   }
 
-  updateView() { }
+  updateView() {
+    if (this.model.isDestroing) {
+      if (!this._isDestroingAnimationOn) {
+        this._isDestroingAnimationOn = true;
+        // this._tint = 0xffa600;
+        this._tint = 0xffa600;
+      }
+      if (Date.now() - this._timeOfLastDyingAnimationChange > 120) {
+        this._timeOfLastDyingAnimationChange = Date.now();
+        this.tint -= 1000;
+      }
+    }
+  }
 
   _calculatePaddings() {
     const widthDifference = CELL_SIZE - this.width;
