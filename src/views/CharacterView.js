@@ -1,5 +1,6 @@
 import { AnimatedSprite } from 'pixi.js';
-import { CELL_SIZE, directions } from '../constants/constants.js';
+import { directions } from '../constants/constants.js';
+import ViewPositionManager from './ViewPositionManager.js';
 
 export default class CharacterView extends AnimatedSprite {
   constructor(animations, model) {
@@ -11,9 +12,7 @@ export default class CharacterView extends AnimatedSprite {
     this.y = model.coors.y;
     this.tint = Math.random() * 0xFFFFFF;
     this.textures = this._defineAnimationTextures();
-    const [paddingX, paddingY] = this._calculatePaddings();
-    this._paddingX = paddingX;
-    this._paddingY = paddingY;
+    this.positionManager = new ViewPositionManager(this, model, false);
     this.isDyingAnimationOn = false;
     this.onFrameChange = () => {
       if (this.currentFrame === 0 && this.playing) {
@@ -23,19 +22,8 @@ export default class CharacterView extends AnimatedSprite {
   }
 
   updateView() {
-    this._updatePosition();
+    this.positionManager.update();
     this._animate();
-  }
-
-  _updatePosition() {
-    this.x = this.model.coors.x + this._paddingX;
-    this.y = this.model.coors.y + this._paddingY;
-  }
-
-  _calculatePaddings() {
-    const widthDifference = CELL_SIZE - this.width;
-    const heightDifference = CELL_SIZE - this.height;
-    return [Math.floor(widthDifference / 2), Math.floor(heightDifference)];
   }
 
   _animate() {
